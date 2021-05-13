@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    msg = new QMessageBox(this);
+    msg = new mymsgbox(this);
     msg->setFixedSize(300,120);
 
     tcpsocket = new QTcpSocket(this);
@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tcpsocket,&QTcpSocket::readyRead,this,&MainWindow::read_data_from_server);
     connect(ui->pushbuttondisconnect,&QPushButton::clicked,this,&MainWindow::disconnect_from_server);
     connect(msg,&QMessageBox::buttonClicked,this,&MainWindow::judge_whether_reset_when_msg_close);
+    connect(msg,&mymsgbox::msg_is_closed,this,&MainWindow::judge_whether_reset_when_msg_close);
 
 }
 
@@ -61,7 +62,7 @@ void MainWindow::disconnect_from_server()
     update();
 
     msg->setWindowTitle("断开连接提醒");
-    msg->setText("由于对局结束，或者某用户退出，\n你已经与服务端断开连接！");
+    msg->setText("由于对局结束，或者某用户退出，\n或者服务器停止服务\n你已经与服务端断开连接！");
     msg->show();
 }
 
@@ -81,7 +82,7 @@ void MainWindow::reset_all()
 void MainWindow::read_data_from_server()
 {
     QByteArray buffer = tcpsocket->readAll();
-    qDebug() << buffer;
+//    qDebug() << buffer;
     for(int i = 0;i < buffer.length();)
     {
         if(buffer[i+0] == 'o' && buffer[i+1] == 'r' && buffer[i+2] == 'd' && buffer[i+3] == 'e' && buffer[i+4] == 'r')

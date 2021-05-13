@@ -18,10 +18,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    mymsgbox.cpp \
     tcp_connect.cpp
 
 HEADERS += \
     mainwindow.h \
+    mymsgbox.h \
     tcp_connect.h
 
 FORMS += \

@@ -6,9 +6,9 @@
 #include <QTcpSocket>
 #include <QHostAddress>
 #include <QMouseEvent>
-#include <QMessageBox>
 #include <QDebug>
 #include "tcp_connect.h"
+#include "mymsgbox.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,7 +36,7 @@ private:
     int situations[20][20] = {{0}};
     int X,Y;
     int is_connected = 0;
-    QMessageBox *msg = nullptr;
+    mymsgbox *msg = nullptr;
     int whether_reset_when_msg_close = 0;
 
 public slots:

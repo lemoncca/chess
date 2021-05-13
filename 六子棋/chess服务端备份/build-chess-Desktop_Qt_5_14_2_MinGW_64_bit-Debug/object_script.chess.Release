@@ -5,8 +5,10 @@ release/judge_rule_and_win.o
 release/loginwindow.o
 release/main.o
 release/mainwindow.o
+release/mymessagebox.o
 release/robot_thread.o
 release/qrc_image.o
 release/moc_loginwindow.o
 release/moc_mainwindow.o
+release/moc_mymessagebox.o
 release/moc_robot_thread.o

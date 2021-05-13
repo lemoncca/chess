@@ -23,11 +23,13 @@ SOURCES += \
     loginwindow.cpp \
     main.cpp \
     mainwindow.cpp \
+    mymessagebox.cpp \
     robot_thread.cpp
 
 HEADERS += \
     loginwindow.h \
     mainwindow.h \
+    mymessagebox.h \
     robot_thread.h
 
 FORMS += \

@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    msg = new QMessageBox(this);
+    msg = new MymessageBox(this);
     msg->setFixedSize(300,120);
 
     server = new QTcpServer(this);
@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(Robot_thread,&robot_thread::robot_final_done,this,&MainWindow::deal_robot_final_done);
     connect(this,&MainWindow::destroyed,this,&MainWindow::reset_all);     //关闭窗口重置变量，防止线程一直运行
     connect(this,&MainWindow::destroyed,this,&MainWindow::stop_thread);     //关闭窗口时停止线程
+
     connect(Robot_thread,&robot_thread::robot_done,this,&MainWindow::deal_robot_done);      //人机对战结束时停止线程
 
     connect(ui->pushButton_4,&QPushButton::clicked,this,&MainWindow::backmenu);  //返回主菜单
@@ -133,6 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pushButton_listen,&QPushButton::clicked,this,&MainWindow::start_listen);
     connect(server,&QTcpServer::newConnection,this,&MainWindow::server_new_connect);
     connect(msg,&QMessageBox::buttonClicked,this,&MainWindow::judge_whether_reset_when_msg_close);
+    connect(msg,&MymessageBox::msg_is_closed,this,&MainWindow::judge_whether_reset_when_msg_close);
 
 
     for (int m = 0;m < 20;m++)      //初始化棋盘为无棋子状态
@@ -212,20 +214,10 @@ void MainWindow::reset_all()  //初始化
             socket = i;
             socket->write(QString("reset").toUtf8().data());
         }
-        if(pattern == 5 && client_num >= 2 && order == 0)
-        {
-            pattern_five_set_order();
-        }
         is_to_restart = 0;
     }
     else if((pattern == 4 || pattern == 5) && is_listen && is_to_back_menu)
     {
-        foreach(QTcpSocket *i,tcpsocket_list)
-        {
-            socket = i;
-            socket->write(QString("disconnect").toUtf8().data());
-        }
-
         socket_disconnected();
 
         msg->setWindowTitle("监听提醒");
@@ -360,12 +352,124 @@ void MainWindow::paintEvent(QPaintEvent *)
 
 void MainWindow::mousePressEvent(QMouseEvent *ev)
 {
-    if(gamestart == 0 || (pattern == 4 && (client_num < 1 || is_listen == 0)))  //若棋局未开始或网络对战不符合要求，不捕捉鼠标按下动作
+    if(gamestart == 0 || (pattern == 4 && (client_num < 1 || is_listen == 0)) || pattern == 5)  //若棋局未开始或网络对战不符合要求，不捕捉鼠标按下动作
     {
         return;
     }
 
-    if(pattern == 2)    //人人对战，双方都捕捉鼠标动作
+    if(pattern == 1 && order == 1)     //人机先手
+    {
+        if(times % 2 == 1)
+        {
+            return;
+        }
+
+        int x = ev->x();   //获取相对坐标
+        int y = ev->y();
+
+        X = (x + 10) / 40 - 1;  //获取点坐标（数组下标）
+        Y = (y + 10) / 40 - 1;
+
+        if(70 <= x && x < 830 && y >= 70 && y < 830 && situations[X][Y] == 0) //确保点击区域不越界，且该点还没有棋子
+        {
+            times++;    //此时下棋总步数加一
+            situations[X][Y] = 1;    //黑棋用1代替
+
+            update();  //调用paintevent，刷新棋盘
+
+            int r = 0;
+            if(times % 2 == 1)    //黑棋下棋时，判断禁手
+            {
+                r = judge_rule(X,Y);
+                if(r == 5)
+                {
+                    msg->setWindowTitle("胜负");
+                    msg->setText("黑棋违反五五禁手，白棋赢！");
+                    whether_reset_when_msg_close = 1;
+                    msg->show();
+                    return;
+                }
+                else if(r == 4)
+                {
+                    msg->setWindowTitle("胜负");
+                    msg->setText("黑棋违反四四禁手，白棋赢！");
+                    whether_reset_when_msg_close = 1;
+                    msg->show();
+                    return;
+                }
+            }
+
+            int win = 0;    //是否胜利
+
+            if(!r)     //若未触犯规则，判断输赢
+            {
+                win = judge_win(X,Y);  //将判断输赢结果保存在win中
+            }
+
+            if(win)         //如果赢了或犯规输掉，就不继续进行机器下棋
+            {
+                return;
+            }
+
+            //            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
+            //            time.start();
+            //            while(time.elapsed() < 300)
+            //            {
+            //                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            //            }
+
+
+            //            int temp = robot(2);  //机器下棋，temp中保存三位或者四位数，例如1010，代表10行10列
+            //            X = temp / 100;
+            //            Y = temp % 100;
+            //            times++;
+            //            update();  //调用paintevent，刷新棋盘
+            //            judge_win(X,Y);
+        }
+    }
+    else if(pattern == 1 && order == 2)     //人机后手
+    {
+        if(times % 2 == 0)
+        {
+            return;
+        }
+
+        int x = ev->x();   //获取相对坐标
+        int y = ev->y();
+
+        X = (x + 10) / 40 - 1;  //获取点坐标（数组下标）
+        Y = (y + 10) / 40 - 1;
+
+        if(70 <= x && x < 830 && y >= 70 && y < 830 && situations[X][Y] == 0) //确保点击区域不越界，且该点还没有棋子
+        {
+            times++;    //此时下棋总步数加一
+            situations[X][Y] = 2;    //黑棋用1代替
+
+            update();  //调用paintevent，刷新棋盘
+            int win = judge_win(X,Y);
+
+            if(win)
+            {
+                return;
+            }
+
+            //            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
+            //            time.start();
+            //            while(time.elapsed() < 300)
+            //            {
+            //                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            //            }
+
+
+            //            int temp = robot(1);  //机器下棋，此时虽然机器黑棋，但是机器自动避免禁手，所以不用判断
+            //            X = temp / 100;
+            //            Y = temp % 100;
+            //            times++;
+            //            update();  //调用paintevent，刷新棋盘
+            //            judge_win(X,Y);
+        }
+    }
+    else if(pattern == 2)    //人人对战，双方都捕捉鼠标动作
     {
         int x = ev->x();   //获取相对坐标
         int y = ev->y();
@@ -485,122 +589,6 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
                     judge_win(X,Y);
                 }
             }
-        }
-    }
-    else if(pattern == 5)
-    {
-        return;
-    }
-    else if(pattern == 1 && order == 1)     //人机先手
-    {
-        if(times % 2 == 1)
-        {
-            return;
-        }
-
-        int x = ev->x();   //获取相对坐标
-        int y = ev->y();
-
-        X = (x + 10) / 40 - 1;  //获取点坐标（数组下标）
-        Y = (y + 10) / 40 - 1;
-
-        if(70 <= x && x < 830 && y >= 70 && y < 830 && situations[X][Y] == 0) //确保点击区域不越界，且该点还没有棋子
-        {
-            times++;    //此时下棋总步数加一
-            situations[X][Y] = 1;    //黑棋用1代替
-
-            update();  //调用paintevent，刷新棋盘
-
-            int r = 0;
-            if(times % 2 == 1)    //黑棋下棋时，判断禁手
-            {
-                r = judge_rule(X,Y);
-                if(r == 5)
-                {
-                    msg->setWindowTitle("胜负");
-                    msg->setText("黑棋违反五五禁手，白棋赢！");
-                    whether_reset_when_msg_close = 1;
-                    msg->show();
-                    return;
-                }
-                else if(r == 4)
-                {
-                    msg->setWindowTitle("胜负");
-                    msg->setText("黑棋违反四四禁手，白棋赢！");
-                    whether_reset_when_msg_close = 1;
-                    msg->show();
-                    return;
-                }
-            }
-
-            int win = 0;    //是否胜利
-
-            if(!r)     //若未触犯规则，判断输赢
-            {
-                win = judge_win(X,Y);  //将判断输赢结果保存在win中
-            }
-
-            if(win)         //如果赢了或犯规输掉，就不继续进行机器下棋
-            {
-                return;
-            }
-
-            //            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
-            //            time.start();
-            //            while(time.elapsed() < 300)
-            //            {
-            //                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-            //            }
-
-
-            //            int temp = robot(2);  //机器下棋，temp中保存三位或者四位数，例如1010，代表10行10列
-            //            X = temp / 100;
-            //            Y = temp % 100;
-            //            times++;
-            //            update();  //调用paintevent，刷新棋盘
-            //            judge_win(X,Y);
-        }
-    }
-    else if(pattern == 1 && order == 2)     //人机后手
-    {
-        if(times % 2 == 0)
-        {
-            return;
-        }
-
-        int x = ev->x();   //获取相对坐标
-        int y = ev->y();
-
-        X = (x + 10) / 40 - 1;  //获取点坐标（数组下标）
-        Y = (y + 10) / 40 - 1;
-
-        if(70 <= x && x < 830 && y >= 70 && y < 830 && situations[X][Y] == 0) //确保点击区域不越界，且该点还没有棋子
-        {
-            times++;    //此时下棋总步数加一
-            situations[X][Y] = 2;    //黑棋用1代替
-
-            update();  //调用paintevent，刷新棋盘
-            int win = judge_win(X,Y);
-
-            if(win)
-            {
-                return;
-            }
-
-            //            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
-            //            time.start();
-            //            while(time.elapsed() < 300)
-            //            {
-            //                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-            //            }
-
-
-            //            int temp = robot(1);  //机器下棋，此时虽然机器黑棋，但是机器自动避免禁手，所以不用判断
-            //            X = temp / 100;
-            //            Y = temp % 100;
-            //            times++;
-            //            update();  //调用paintevent，刷新棋盘
-            //            judge_win(X,Y);
         }
     }
 }

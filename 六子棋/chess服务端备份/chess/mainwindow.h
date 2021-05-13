@@ -5,7 +5,6 @@
 #include <QPainter>
 #include <QBrush>
 #include <QMouseEvent>
-#include <QMessageBox>
 #include <QDebug>
 #include <QElapsedTimer>
 #include <QTcpServer>
@@ -15,6 +14,7 @@
 #include <QTime>
 #include <QMutex>
 #include <ui_mainwindow.h>
+#include <mymessagebox.h>
 #include <robot_thread.h>
 
 
@@ -62,7 +62,7 @@ private:
     int client_num = 0;                         //目前客户数量
     int is_to_back_menu = 0;              //判断是否将返回主菜单
     int is_to_restart = 0;              //判断是否点击了重新开始
-    QMessageBox *msg = nullptr;
+    MymessageBox *msg = nullptr;
     int whether_reset_when_msg_close = 0;
 
 signals:
