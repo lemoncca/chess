@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>loginwindow</class>
+ <widget class="QMainWindow" name="loginwindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1254</width>
+    <height>876</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>100</width>
+    <height>50</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>120</x>
+      <y>590</y>
+      <width>900</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>900</width>
+      <height>150</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>900</width>
+      <height>150</height>
+     </size>
+    </property>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>9</x>
+       <y>9</y>
+       <width>250</width>
+       <height>100</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>250</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>人机对战</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>325</x>
+       <y>9</y>
+       <width>250</width>
+       <height>100</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>250</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>本地双人对战</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="geometry">
+      <rect>
+       <x>641</x>
+       <y>9</y>
+       <width>250</width>
+       <height>100</height>
+      </rect>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>250</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>250</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>电脑对战</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="widget_2" native="true">
+    <property name="geometry">
+     <rect>
+      <x>1020</x>
+      <y>80</y>
+      <width>271</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">font: 70pt &quot;华文行楷&quot;;</string>
+       </property>
+       <property name="text">
+        <string>子</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="styleSheet">
+        <string notr="true">font: 70pt &quot;华文行楷&quot;;</string>
+       </property>
+       <property name="text">
+        <string>棋</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">font: 70pt &quot;华文行楷&quot;;
+</string>
+       </property>
+       <property name="text">
+        <string>六</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_cs">
+    <property name="geometry">
+     <rect>
+      <x>249</x>
+      <y>730</y>
+      <width>281</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>250</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>300</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>服务端对战客户端</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_cc">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>730</y>
+      <width>281</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>250</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>300</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>客户端对战客户端</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1254</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

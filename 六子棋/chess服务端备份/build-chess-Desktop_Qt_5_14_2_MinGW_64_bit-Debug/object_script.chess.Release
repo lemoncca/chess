@@ -1,0 +1,12 @@
+release/AI.o
+release/TCP_online.o
+release/deal_robot_thread.o
+release/judge_rule_and_win.o
+release/loginwindow.o
+release/main.o
+release/mainwindow.o
+release/robot_thread.o
+release/qrc_image.o
+release/moc_loginwindow.o
+release/moc_mainwindow.o
+release/moc_robot_thread.o
