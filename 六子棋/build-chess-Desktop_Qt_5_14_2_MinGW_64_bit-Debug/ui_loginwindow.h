@@ -34,6 +34,8 @@ public:
     QLabel *label_2;
     QLabel *label_3;
     QLabel *label;
+    QPushButton *pushButton_cs;
+    QPushButton *pushButton_cc;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -41,7 +43,7 @@ public:
     {
         if (loginwindow->objectName().isEmpty())
             loginwindow->setObjectName(QString::fromUtf8("loginwindow"));
-        loginwindow->resize(1254, 819);
+        loginwindow->resize(1254, 876);
         loginwindow->setMinimumSize(QSize(100, 50));
         centralwidget = new QWidget(loginwindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
@@ -92,6 +94,18 @@ public:
 
         gridLayout->addWidget(label, 2, 0, 1, 1);
 
+        pushButton_cs = new QPushButton(centralwidget);
+        pushButton_cs->setObjectName(QString::fromUtf8("pushButton_cs"));
+        pushButton_cs->setGeometry(QRect(249, 730, 281, 100));
+        pushButton_cs->setMinimumSize(QSize(250, 100));
+        pushButton_cs->setMaximumSize(QSize(300, 100));
+        pushButton_cs->setStyleSheet(QString::fromUtf8(""));
+        pushButton_cc = new QPushButton(centralwidget);
+        pushButton_cc->setObjectName(QString::fromUtf8("pushButton_cc"));
+        pushButton_cc->setGeometry(QRect(610, 730, 281, 100));
+        pushButton_cc->setMinimumSize(QSize(250, 100));
+        pushButton_cc->setMaximumSize(QSize(300, 100));
+        pushButton_cc->setStyleSheet(QString::fromUtf8(""));
         loginwindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(loginwindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -110,11 +124,13 @@ public:
     {
         loginwindow->setWindowTitle(QCoreApplication::translate("loginwindow", "MainWindow", nullptr));
         pushButton->setText(QCoreApplication::translate("loginwindow", "\344\272\272\346\234\272\345\257\271\346\210\230", nullptr));
-        pushButton_2->setText(QCoreApplication::translate("loginwindow", "\345\217\214\344\272\272\345\257\271\346\210\230", nullptr));
+        pushButton_2->setText(QCoreApplication::translate("loginwindow", "\346\234\254\345\234\260\345\217\214\344\272\272\345\257\271\346\210\230", nullptr));
         pushButton_3->setText(QCoreApplication::translate("loginwindow", "\347\224\265\350\204\221\345\257\271\346\210\230", nullptr));
         label_2->setText(QCoreApplication::translate("loginwindow", "\345\255\220", nullptr));
         label_3->setText(QCoreApplication::translate("loginwindow", "\346\243\213", nullptr));
         label->setText(QCoreApplication::translate("loginwindow", "\345\205\255", nullptr));
+        pushButton_cs->setText(QCoreApplication::translate("loginwindow", "\346\234\215\345\212\241\347\253\257\345\257\271\346\210\230\345\256\242\346\210\267\347\253\257", nullptr));
+        pushButton_cc->setText(QCoreApplication::translate("loginwindow", "\345\256\242\346\210\267\347\253\257\345\257\271\346\210\230\345\256\242\346\210\267\347\253\257", nullptr));
     } // retranslateUi
 
 };

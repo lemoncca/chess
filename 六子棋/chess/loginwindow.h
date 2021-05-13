@@ -15,9 +15,11 @@ public:
     explicit loginwindow(QWidget *parent = nullptr);
     ~loginwindow();
 
-    void player_computer();  //三种对战模式
+    void player_computer();  //四种对战模式
     void player_player();
     void computer_computer();
+    void server_client();
+    void client_client();
 
     void deal_back();   //处理游戏界面发回的信号
 

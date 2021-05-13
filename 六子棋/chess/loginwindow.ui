@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1254</width>
-    <height>819</height>
+    <height>876</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -94,7 +94,7 @@
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>双人对战</string>
+      <string>本地双人对战</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_3">
@@ -168,6 +168,62 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_cs">
+    <property name="geometry">
+     <rect>
+      <x>249</x>
+      <y>730</y>
+      <width>281</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>250</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>300</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>服务端对战客户端</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_cc">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>730</y>
+      <width>281</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>250</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>300</width>
+      <height>100</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>客户端对战客户端</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

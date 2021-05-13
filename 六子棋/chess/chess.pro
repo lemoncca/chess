@@ -16,6 +16,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    AI.cpp \
+    TCP_online.cpp \
+    deal_robot_thread.cpp \
+    judge_rule_and_win.cpp \
     loginwindow.cpp \
     main.cpp \
     mainwindow.cpp \

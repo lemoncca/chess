@@ -116,6 +116,23 @@ border-image: url(:/image/4.jpg);</string>
      <string>重新开始</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_listen">
+    <property name="geometry">
+     <rect>
+      <x>950</x>
+      <y>140</y>
+      <width>271</width>
+      <height>131</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 22pt &quot;华文楷体&quot;;
+border-image: url(:/image/4.jpg);</string>
+    </property>
+    <property name="text">
+     <string>开放端口</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
