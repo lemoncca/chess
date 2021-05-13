@@ -8,6 +8,10 @@ int MainWindow::judge_rule(int i, int j)   //禁手判断
     int space = 0;          //空格数
     int temp_count = 0;     //暂时计数器
 
+
+
+//        下面同一个方向上有两个循环，第一个循环用于判断活四活五，第二个用于判断冲五
+
     for (a = i - 5;a <= i;a++)  //假设该串棋的开始点 与 要判断的格子 中间有4（之后的循环中分别假设有3、2、1、0）个格子
     {                           //有四个格子是因为，最大可能格子数为：三个友方棋子和一个空格
         if(a <= 0) a = 1;       //保证循环点大于0
@@ -46,6 +50,76 @@ int MainWindow::judge_rule(int i, int j)   //禁手判断
         space = 0;
     }
 
+    for (a = i - 5;a <= i;a++)  //冲五判断与活五大致相同，多做了一个if分支判断（内容大致相同），即究竟是左边有白棋还是右边有白棋
+    {
+        if(a <= 0)
+        {
+            a = 1;
+        }
+
+        int m = a;
+        if((situations[a-1][j] == 2 || a == 1) && a != i)
+        {
+            while(space <= 1 && m < 20)
+            {
+                if(situations[a][j] != 1)
+                {
+                    break;
+                }
+
+                if(situations[m][j] == 0) space++;
+                else if(situations[m][j] == 1) temp_count++;
+                else if((situations[m][j] == 2 || m == 19) && situations[m-1][j] == 1)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                else if((situations[m][j] == 2 || m == 19) && situations[m-1][j] == 0)
+                {
+                    break;
+                }
+                m++;
+            }
+            if(temp_count == 5)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+        else if(situations[a-1][j] == 0 && a != 1)
+        {
+            while(space <= 1 && m < 20)
+            {
+                if(situations[a][j] != 1)
+                {
+                    break;
+                }
+
+                if(situations[m][j] == 0) space++;
+                else if(situations[m][j] == 1) temp_count++;
+                else if((situations[m][j] == 2 || m == 19) && situations[m-1][j] == 1)
+                {
+                    break;
+                }
+                else if((situations[m][j] == 2 || m == 19) && situations[m-1][j] == 0)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                m++;
+            }
+            if(temp_count == 5 && space <= 1)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+    }
+
+
+
     for (b = j - 5;b <= j;b++)      //竖直方向，同理与水平方向
     {
         if(b <= 0) b = 1;
@@ -83,6 +157,77 @@ int MainWindow::judge_rule(int i, int j)   //禁手判断
         temp_count = 0;
         space = 0;
     }
+
+    for (b = j - 5;b <= j;b++)
+    {
+        if(b <= 0)
+        {
+            b = 1;
+        }
+
+        int m = b;
+        if((situations[i][b-1] == 2 || b == 1) && b != j)
+        {
+            while(space <= 1 && m < 20)
+            {
+                if(situations[i][b] != 1)
+                {
+                    break;
+                }
+
+                if(situations[i][m] == 0) space++;
+                else if(situations[i][m] == 1) temp_count++;
+                else if((situations[i][m] == 2 || m == 19) && situations[i][m-1] == 1)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                else if((situations[i][m] == 2 || m == 19) && situations[i][m-1] == 0)
+                {
+                    break;
+                }
+                m++;
+            }
+            if(temp_count == 5)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+        else if(situations[i][b-1] == 0 && b != 1)
+        {
+            while(space <= 1 && m < 20)
+            {
+                if(situations[i][b] != 1)
+                {
+                    break;
+                }
+
+                if(situations[i][m] == 0) space++;
+                else if(situations[i][m] == 1) temp_count++;
+                else if((situations[i][m] == 2 || m == 19) && situations[i][m-1] == 1)
+                {
+                    break;
+                }
+                else if((situations[i][m] == 2 || m == 19) && situations[i][m-1] == 0)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                m++;
+            }
+            if(temp_count == 5 && space <= 1)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+    }
+
+
+
 
     for (a = i - 5,b = j - 5;a <= i;a++,b++)    //斜方向，同理与水平方向
     {
@@ -127,6 +272,80 @@ int MainWindow::judge_rule(int i, int j)   //禁手判断
         space = 0;
     }
 
+    for (b = j - 5,a = i - 5;a <= i;a++,b++)
+    {
+        while(a <= 0 || b <= 0)
+        {
+            a++;
+            b++;
+        }
+
+        int m = a,n = b;
+        if((situations[a-1][b-1] == 2 || b == 1 || a == 1) && b != j)
+        {
+            while(space <= 1 && m < 20 && n < 20)
+            {
+                if(situations[a][b] != 1)
+                {
+                    break;
+                }
+
+                if(situations[m][n] == 0) space++;
+                else if(situations[m][n] == 1) temp_count++;
+                else if((situations[m][n] == 2 || m == 19 || n == 19) && situations[m-1][n-1] == 1)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                else if((situations[m][n] == 2 || m == 19 || n == 19) && situations[m-1][n-1] == 0)
+                {
+                    break;
+                }
+                m++;
+                n++;
+            }
+            if(temp_count == 5)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+        else if(situations[a-1][b-1] == 0 && b != 1 && a != 1)
+        {
+            while(space <= 1 && m < 20 && n < 20)
+            {
+                if(situations[a][b] != 1)
+                {
+                    break;
+                }
+
+                if(situations[m][n] == 0) space++;
+                else if(situations[m][n] == 1) temp_count++;
+                else if((situations[m][n] == 2 || m == 19 || n == 19) && situations[m-1][n-1] == 1)
+                {
+                    break;
+                }
+                else if((situations[m][n] == 2 || m == 19 || n == 19) && situations[m-1][n-1] == 0)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                m++;
+                n++;
+            }
+            if(temp_count == 5 && space <= 1)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+    }
+
+
+
+
     for (a = i - 5,b = j + 5;a <= i;a++,b--)        //斜方向，同理与水平方向
     {
         while(a <= 0 || b >= 20)
@@ -169,6 +388,79 @@ int MainWindow::judge_rule(int i, int j)   //禁手判断
         temp_count = 0;
         space = 0;
     }
+
+    for (b = j + 5,a = i - 5;a <= i;a++,b--)
+    {
+        while(a <= 0 || b >= 20)
+        {
+            a++;
+            b--;
+        }
+
+        int m = a,n = b;
+        if((situations[a-1][b+1] == 2 || b == 19 || a == 1) && b != j)
+        {
+            while(space <= 1 && m < 20 && n > 0)
+            {
+                if(situations[a][b] != 1)
+                {
+                    break;
+                }
+
+                if(situations[m][n] == 0) space++;
+                else if(situations[m][n] == 1) temp_count++;
+                else if((situations[m][n] == 2 || m == 19 || n == 1) && situations[m-1][n+1] == 1)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                else if((situations[m][n] == 2 || m == 19 || n == 1) && situations[m-1][n+1] == 0)
+                {
+                    break;
+                }
+                m++;
+                n--;
+            }
+            if(temp_count == 5)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+        else if(situations[a-1][b+1] == 0 && b != 19 && a != 1)
+        {
+            while(space <= 1 && m < 20 && n > 0)
+            {
+                if(situations[a][b] != 1)
+                {
+                    break;
+                }
+
+                if(situations[m][n] == 0) space++;
+                else if(situations[m][n] == 1) temp_count++;
+                else if((situations[m][n] == 2 || m == 19 || n == 1) && situations[m-1][n+1] == 1)
+                {
+                    break;
+                }
+                else if((situations[m][n] == 2 || m == 19 || n == 1) && situations[m-1][n+1] == 0)
+                {
+                    temp_count = 0;
+                    break;
+                }
+                m++;
+                n--;
+            }
+            if(temp_count == 5 && space <= 1)
+            {
+                ban_five++;
+            }
+            temp_count = 0;
+            space = 0;
+        }
+    }
+
+
 
     if(ban_five >= 2)
     {
