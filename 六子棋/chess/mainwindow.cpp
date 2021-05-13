@@ -1,11 +1,28 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+int MainWindow::pattern = 0;
+int MainWindow::gamestart = 0;
+int MainWindow::X = 0;
+int MainWindow::Y = 0;
+int MainWindow::times = 0;
+int MainWindow::order = 0;
+int MainWindow::situations[20][20] = {{0}};
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    Robot_thread = new robot_thread(this);
+
+//    机器人线程专门用于人机对战
+//    目的是为了实现异步交互的功能
+
+    connect(Robot_thread,&robot_thread::robot_final_done,this,&MainWindow::deal_robot_final_done);
+    connect(this,&MainWindow::destroyed,this,&MainWindow::stop_thread);     //关闭窗口时停止线程
+    connect(Robot_thread,&robot_thread::robot_done,this,&MainWindow::deal_robot_done);      //人机对战结束时停止线程
 
     connect(ui->pushButton_4,&QPushButton::clicked,this,&MainWindow::backmenu);  //返回主菜单
     connect(ui->pushButton_5,&QPushButton::clicked,    //点击开始游戏，六子棋开始
@@ -13,12 +30,20 @@ MainWindow::MainWindow(QWidget *parent)
             {
                 gamestart = 1;                  //游戏状态设置为开始
                 ui->pushButton_5->setText("对弈中");    //游戏开始后，更改文字，提醒用户
-                if(pattern == 1 && order == 2)  //若是人后手，先给中央下一个子
+
+                if(pattern == 1)
                 {
-                    situations[10][10] = 1;
-                    times++;
-                    update();
+                    QMessageBox::information(this,"robot_thread_reminder",
+                    "               AI  线程 \n (用于实现异步交互功能要求) \n                启 动!");
+                    Robot_thread->start();
                 }
+
+//                if(pattern == 1 && order == 2)  //若是人后手，先给中央下一个子
+//                {
+//                    situations[10][10] = 1;
+//                    times++;
+//                    update();
+//                }
             }
             );
     connect(ui->pushButton_6,&QPushButton::clicked,    //人机先手
@@ -92,8 +117,26 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::deal_robot_final_done()
+{
+    QMessageBox::information(this,"robot_thread_reminder","AI 线程已经关闭！");
+}
+
+void MainWindow::stop_thread()
+{
+        Robot_thread->quit();
+        Robot_thread->wait();
+}
+
+void MainWindow::deal_robot_done(int x,int y)
+{
+    update();
+    judge_win(x,y);
+}
+
 void MainWindow::reset_all()  //初始化
 {
+     gamestart = 0;          //不用返回主界面，就可以继续下
     for (int m = 0;m < 20;m++)      //重新初始化棋盘为无棋子状态
     {
         for (int n = 0;n <20;n++)
@@ -101,9 +144,9 @@ void MainWindow::reset_all()  //初始化
             situations[m][n] = 0;
         }
     }
-    times = 0;              //注意：此处模式（pattern）没有改变！为了让用户下完一盘后，
-    gamestart = 0;          //不用返回主界面，就可以继续下
     order = 0;
+    times = 0;              //注意：此处模式（pattern）没有改变！为了让用户下完一盘后，不用返回主界面就能继续下
+
     update();
 }
 
@@ -237,6 +280,11 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
     }
     else if(pattern == 1 && order == 1)     //人机先手
     {
+        if(times % 2 == 1)
+        {
+            return;
+        }
+
         int x = ev->x();   //获取相对坐标
         int y = ev->y();
 
@@ -280,24 +328,29 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
                 return;
             }
 
-            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
-            time.start();
-            while(time.elapsed() < 300)
-            {
-                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-            }
+//            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
+//            time.start();
+//            while(time.elapsed() < 300)
+//            {
+//                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+//            }
 
 
-            int temp = robot(2);  //机器下棋，temp中保存三位或者四位数，例如1010，代表10行10列
-            X = temp / 100;
-            Y = temp % 100;
-            times++;
-            update();  //调用paintevent，刷新棋盘
-            judge_win(X,Y);
+//            int temp = robot(2);  //机器下棋，temp中保存三位或者四位数，例如1010，代表10行10列
+//            X = temp / 100;
+//            Y = temp % 100;
+//            times++;
+//            update();  //调用paintevent，刷新棋盘
+//            judge_win(X,Y);
         }
     }
     else if(pattern == 1 && order == 2)     //人机后手
     {
+        if(times % 2 == 0)
+        {
+            return;
+        }
+
         int x = ev->x();   //获取相对坐标
         int y = ev->y();
 
@@ -317,20 +370,20 @@ void MainWindow::mousePressEvent(QMouseEvent *ev)
                 return;
             }
 
-            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
-            time.start();
-            while(time.elapsed() < 300)
-            {
-                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
-            }
+//            QElapsedTimer time;    //人下完之后暂停一会儿再调用机器，显得更美观
+//            time.start();
+//            while(time.elapsed() < 300)
+//            {
+//                QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+//            }
 
 
-            int temp = robot(1);  //机器下棋，此时虽然机器黑棋，但是机器自动避免禁手，所以不用判断
-            X = temp / 100;
-            Y = temp % 100;
-            times++;
-            update();  //调用paintevent，刷新棋盘
-            judge_win(X,Y);
+//            int temp = robot(1);  //机器下棋，此时虽然机器黑棋，但是机器自动避免禁手，所以不用判断
+//            X = temp / 100;
+//            Y = temp % 100;
+//            times++;
+//            update();  //调用paintevent，刷新棋盘
+//            judge_win(X,Y);
         }
     }
 }
@@ -701,7 +754,7 @@ int MainWindow::robot(int color)
 {
     int weight[20][20] = {{0}};     //权重数组
     int max = 0,max_index = 1010;      //权重最大值
-    int test[18] = {0};
+//    int test[18] = {0};           //用于测试ai权值判断准确性，与robot函数最后的qDebug() << test[]  连用
 
     for(int i = 0;i < 20;i++)       //先初步筛选，等会儿需要判断权重的格子：这些格子的周围有已经下过的格子
     {
@@ -4236,30 +4289,30 @@ enemy_skip_right_oblique:
                     }
                     max = weight[i][j];
                     max_index = i*100 + j;
-                    test[0] = friend_true[0];
-                    test[1] = friend_true[1];
-                    test[2] = friend_true[2];
-                    test[3] = friend_true[3];
-                    test[4] = friend_true[4];
-                    test[5] = friend_true[5];
-                    test[6] = friend_true[6];
-                    test[7] = friend_true[7];
-                    test[8] = friend_true[8];
-                    test[9] = enemy_true[0];
-                    test[10] = enemy_true[1];
-                    test[11] = enemy_true[2];
-                    test[12] = enemy_true[3];
-                    test[13] = enemy_true[4];
-                    test[14] = enemy_true[5];
-                    test[15] = enemy_true[6];
-                    test[16] = enemy_true[7];
-                    test[17] = enemy_true[8];
+//                    test[0] = friend_true[0];
+//                    test[1] = friend_true[1];
+//                    test[2] = friend_true[2];
+//                    test[3] = friend_true[3];
+//                    test[4] = friend_true[4];
+//                    test[5] = friend_true[5];
+//                    test[6] = friend_true[6];
+//                    test[7] = friend_true[7];
+//                    test[8] = friend_true[8];
+//                    test[9] = enemy_true[0];
+//                    test[10] = enemy_true[1];
+//                    test[11] = enemy_true[2];
+//                    test[12] = enemy_true[3];
+//                    test[13] = enemy_true[4];
+//                    test[14] = enemy_true[5];
+//                    test[15] = enemy_true[6];
+//                    test[16] = enemy_true[7];
+//                    test[17] = enemy_true[8];
                 }
             }
         }
     }
 
-    if(max == 0 && times != 1)      //不是第一步，且所有格子权值全部为0时，选取周围空间最大的空格（每个格子周围最多8个空格子）
+    if(max == 0 && times != 1 && max != 0)      //不是第一步，且所有格子权值全部为0时，选取周围空间最大的空格（每个格子周围最多8个空格子）
     {
         int free_space = 1;         //赋值为1，防止此时还出现最大空余空间还是0的情况（即所有剩下空格的四周都没有任何空格）
         int max_free_space = 0;     //初始化最大剩余空间为0
@@ -4292,12 +4345,13 @@ enemy_skip_right_oblique:
 
     situations[max_index/100][max_index%100] = color;
 
-    qDebug() << "己方：活：" << '\n' << "六 " <<test[8] << " 五 " << test[7] << " 四 " << test[6] << " 三 "<< test[5] << " 二 " << test[4] << '\n';
-    qDebug() << "己方：冲：" << '\n' << "五 " <<test[3] << " 四 " << test[2] << " 三 " << test[1] << " 二 " << test[0] << '\n';
 
-    qDebug() << "敌方：活：" << '\n' << "六 " <<test[17] << " 五 " << test[16] << " 四 " << test[15] << " 三 "<< test[14] << " 二 " << test[13] << '\n';
-    qDebug() << "敌方：冲：" << '\n' << "五 " <<test[12] << " 四 " << test[11] << " 三 " << test[10] << " 二 " << test[9] << '\n';
-    qDebug() << max;
+//    qDebug() << "己方：活：" << '\n' << "六 " <<test[8] << " 五 " << test[7] << " 四 " << test[6] << " 三 "<< test[5] << " 二 " << test[4] << '\n';
+//    qDebug() << "己方：冲：" << '\n' << "五 " <<test[3] << " 四 " << test[2] << " 三 " << test[1] << " 二 " << test[0] << '\n';
+
+//    qDebug() << "敌方：活：" << '\n' << "六 " <<test[17] << " 五 " << test[16] << " 四 " << test[15] << " 三 "<< test[14] << " 二 " << test[13] << '\n';
+//    qDebug() << "敌方：冲：" << '\n' << "五 " <<test[12] << " 四 " << test[11] << " 三 " << test[10] << " 二 " << test[9] << '\n';
+//    qDebug() << max;
     return max_index;
 }
 
