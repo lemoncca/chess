@@ -1,0 +1,14 @@
+debug/AI.o
+debug/TCP_online.o
+debug/deal_robot_thread.o
+debug/judge_rule_and_win.o
+debug/loginwindow.o
+debug/main.o
+debug/mainwindow.o
+debug/mymessagebox.o
+debug/robot_thread.o
+debug/qrc_image.o
+debug/moc_loginwindow.o
+debug/moc_mainwindow.o
+debug/moc_mymessagebox.o
+debug/moc_robot_thread.o

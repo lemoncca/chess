@@ -1,0 +1,1 @@
+若要使用该棋子，请将该文件夹放至“build-chess-Desktop_Qt_5_14_2_MinGW_64_bit-Debug”下！！
